@@ -1,0 +1,8 @@
+*.db
+*.json
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+*.swp
+*.swo
