@@ -168,10 +168,13 @@ class UploadManager(plugins.Plugin):
                         # Determine badge class - use filtered reason badge if filtered
                         badge_class = self._badge_class_for_reason(rec.get("filtered_reason")) if rec.get("filtered_reason") else self._badge_class(w['status'])
                         
+                        # Add delete button (X) for every file
+                        delete_btn = f"<a class='delete-x' href='?action=delete_file&target={quote_plus(path)}&sort={sort_key}&filter={filter_key}' title='Delete this file'>✕</a>"
+                        
                         table_rows.append(
                                 f"<tr><td class='fname'>{fname}</td><td>{size}</td><td>{mtime}</td>"
                                 f"<td><span class='badge {badge_class}'>{escape(w['status'])}</span></td>"
-                                f"<td>{invalid}</td><td>{filtered}</td><td>{err}</td><td>{action_html}</td></tr>"
+                                f"<td>{invalid}</td><td>{filtered}</td><td>{err}</td><td>{action_html}</td><td>{delete_btn}</td></tr>"
                         )
 
                 wpa_sec_toggle = "✓ Enabled" if self.options.get('enable_wpa_sec', True) else "✗ Disabled"
@@ -214,8 +217,8 @@ class UploadManager(plugins.Plugin):
                     <div class='subtle' style="margin-left: auto;"><span style="color: {internet_color}; font-weight: bold;">{internet_text}</span></div>
                 </div>
                 <table>
-                    <thead><tr><th>File</th><th>Size</th><th>Modified</th><th>wpa-sec</th><th>Invalid</th><th>Filtered</th><th>Error</th><th>Action</th></tr></thead>
-                    <tbody>{''.join(table_rows) if table_rows else '<tr><td colspan="8">No files match this filter.</td></tr>'}</tbody>
+                    <thead><tr><th>File</th><th>Size</th><th>Modified</th><th>wpa-sec</th><th>Invalid</th><th>Filtered</th><th>Error</th><th>Action</th><th>Delete</th></tr></thead>
+                    <tbody>{''.join(table_rows) if table_rows else '<tr><td colspan="9">No files match this filter.</td></tr>'}</tbody>
                 </table>
                 """
 
@@ -432,6 +435,8 @@ class UploadManager(plugins.Plugin):
             .badge-duplicate {{ background:#991b1b; color:#fee2e2; }}
             .badge-filtered, .badge-skipped {{ background:#374151; color:#d1d5db; }}
             .action-link.delete {{ color:#ef4444; text-decoration:underline; }}
+            .delete-x {{ display:inline-block; width:24px; height:24px; line-height:24px; text-align:center; background:#ef4444; color:white; border-radius:50%; text-decoration:none; font-weight:bold; cursor:pointer; font-size:16px; }}
+            .delete-x:hover {{ background:#dc2626; }}
           </style>
         </head>
         <body>{body}</body>
